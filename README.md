@@ -143,7 +143,7 @@ B站 视频演示：XX
 
 gitee地址(主推)：XX
 
-github地址：XX
+github地址：https://github.com/yaom2018/AI-Smart-Learning
 
 ## PC端内置功能
 
