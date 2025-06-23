@@ -245,7 +245,7 @@ github地址：https://github.com/yaom2018/AI-Smart-Learning
 获取代码
 
 ```
-git clone https://gitee.com/ktianc/kinit.git
+git clone https://github.com/yaom2018/AI-Smart-Learning.git
 ```
 
 ### 准备工作
@@ -476,14 +476,14 @@ pnpm run build:pro
 1. 获取代码
 
    ```
-   git clone XX
+   git clone https://github.com/yaom2018/AI-Smart-Learning.git
    ```
 
 2. 修改项目环境配置：
 
    1. 修改 API 端：
 
-      文件路径为：`kinit-api/application/settings.py`
+      文件路径为：`drawing-api/application/settings.py`
 
       ```python
       # 安全警告: 不要在生产中打开调试运行!
@@ -492,7 +492,7 @@ pnpm run build:pro
 
    2. 修改定时任务端：
 
-      文件路径为：`kinit-task/application/settings.py`
+      文件路径为：`drawing-task/application/settings.py`
 
       ```python
       # 安全警告: 不要在生产中打开调试运行!
@@ -505,7 +505,7 @@ pnpm run build:pro
 
    1. 修改 API 端配置文件：
 
-      文件路径为：`kinit-api/application/config/production.py`
+      文件路径为：`drawing-api/application/config/production.py`
 
       ```python
       # Mysql 数据库配置项
@@ -527,7 +527,7 @@ pnpm run build:pro
       
    2. 修改定时任务配置文件
 
-      文件路径为：`kinit-task/application/config/production.py`
+      文件路径为：`drawing-task/application/config/production.py`
 
       ```python
       # Redis 数据库配置
@@ -548,7 +548,7 @@ pnpm run build:pro
 
 4. 配置阿里云 OSS 与 IP 解析接口地址（可选）
 
-   文件路径：`kinit-api/application/config/production.py`
+   文件路径：`drawing-api/application/config/production.py`
 
    ```python
    # 阿里云对象存储OSS配置
@@ -576,7 +576,7 @@ pnpm run build:pro
 5. 前端项目打包：
 
    ```shell
-   cd kinit-admin
+   cd drawing-admin
    
    # 安装依赖包
    pnpm install
@@ -592,7 +592,7 @@ pnpm run build:pro
 docker-compose up -d
 
 # 初始化数据
-docker-compose exec kinit-api python3 main.py init
+docker-compose exec drawing-api python3 main.py init
 
 # 重启所有容器
 docker-compose restart
