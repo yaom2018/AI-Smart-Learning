@@ -2,13 +2,13 @@
 from sqlalchemy import Integer
 
 from utils.response import SuccessResponse, ErrorResponse
-from fastapi import HTTPException, UploadFile
+from fastapi import  UploadFile
 from PIL import Image
 from io import BytesIO
 import hashlib
 import mimetypes
-from typing import Optional
 from redis.asyncio import Redis
+from application.settings import REDIS_VALID_TIME
 
 class ViewsCheckService:
     """
@@ -93,7 +93,7 @@ class ViewsCheckService:
             return ErrorResponse(msg=f"文件已上传过，请勿重复上传", code=409)
         else:
             # 如果 Redis 中不存在该 key，则将其存入 Redis 缓存
-            await self.rd.set(key, value, ex=600000)
+            await self.rd.set(key, value, ex=REDIS_VALID_TIME)
             print(f"文件未上传过，存入 Redis 缓存: {value}")
 
         return SuccessResponse(data="上传成功", code=200)
