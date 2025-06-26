@@ -15,12 +15,13 @@ class ViewsCheckService:
     服务类：用于校验图片有效性、幂等性检查等操作。
     """
 
-    def __init__(self, redis: Redis):
+    def __init__(self, rd: Redis):
         """
         初始化服务类。
         :param redis_client: Redis 客户端实例，用于幂等性检查。
         """
-        self.redis = redis
+        self.rd = rd
+        print(f"Redis client initialized: {self.rd}")
 
     async def check_image_validity(self, file: UploadFile) -> SuccessResponse:
         """
@@ -86,13 +87,13 @@ class ViewsCheckService:
         value = f"upload:file:{file_hash}"
 
         # 检查 Redis 中是否存在该 key
-        cached_result = await self.redis.get(key)
+        cached_result = await self.rd.get(key)
         if cached_result:
             print(f"文件已上传过，直接返回缓存结果: {cached_result.decode()}")
             return ErrorResponse(msg=f"文件已上传过，请勿重复上传", code=500)
         else:
             # 如果 Redis 中不存在该 key，则将其存入 Redis 缓存
-            await self.redis.set(key, value, ex=60)
+            await self.rd.set(key, value, ex=60)
             print(f"文件未上传过，存入 Redis 缓存: {value}")
 
         return SuccessResponse(data="上传成功", code=200)

@@ -65,6 +65,7 @@ async def connect_redis(app: FastAPI, status: bool):
     :return:
     """
     if status:
+        print(f"Redis 连接中...{REDIS_DB_URL}")
         rd = aioredis.from_url(REDIS_DB_URL, decode_responses=True, health_check_interval=1)
         app.state.redis = rd
         try:

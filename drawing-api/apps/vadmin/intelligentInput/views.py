@@ -5,7 +5,7 @@
 # @File           : views.py
 # @IDE            : PyCharm
 # @desc           : 路由，视图文件
-from core.database import db_getter
+from core.database import db_getter,redis_getter
 from fastapi import APIRouter, UploadFile, Depends
 from redis.asyncio import Redis
 from utils.response import SuccessResponse
@@ -19,7 +19,6 @@ from core.dependencies import IdList
 from apps.vadmin.auth.utils.current import AllUserAuth, FullAdminAuth
 
 
-
 app = APIRouter()
 
 
@@ -27,11 +26,10 @@ app = APIRouter()
 #    AI智慧上传图片
 ###########################################################
 @app.post("/drawing/images/uploadImg", summary="上传图片", tags=["AI智慧上传图片"])
-async def upload_images(file: UploadFile, auth: Auth = Depends(FullAdminAuth())):
+async def upload_images(file: UploadFile, auth: Auth = Depends(FullAdminAuth()), rd: Redis = Depends(redis_getter)):
     # 图片校验
     # 根据实际情况初始化 Redis 客户端
-    redis_client = Redis()
-    service = ViewsCheckService(redis_client)
+    service = ViewsCheckService(rd)
     ## 获取文件名称
     # 调用异步方法并获取返回值
     check_result = await service.check_image_validity(file)
@@ -62,6 +60,7 @@ async def upload_images(file: UploadFile, auth: Auth = Depends(FullAdminAuth()))
         filepath = ALIYUN_OSS_INTELIGENT_PATH
         result = await AliyunOSS(BucketConf(**ALIYUN_OSS)).upload_image(filepath, file)
         print(f"上传结果：{result}")
+
         data = schemas.DrawingImagesRecord(
             filename=file.filename,
             image_url=result,
