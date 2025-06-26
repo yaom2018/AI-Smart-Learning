@@ -61,7 +61,7 @@ class ViewsCheckService:
             return ErrorResponse(msg=f"系统错误: {str(e)}", code=500)
 
 
-    async def check_idempotency(self, file_content: bytes, user_id: Integer) -> Optional[str]:
+    async def check_idempotency(self, file_content: bytes, user_id: Integer) -> SuccessResponse:
         """
         幂等性检查。
         :param file_content: 文件内容（字节流）。
@@ -71,7 +71,7 @@ class ViewsCheckService:
         # 检查 file_content 是否为 None
         if file_content is None:
             print("file_content 为 None，无法计算哈希值")
-            return None
+            return ErrorResponse(msg=f"文件已上传过，请勿重复上传", code=500)
 
         # 确保 file_content 是 bytes 类型
         if not isinstance(file_content, bytes):
@@ -83,17 +83,17 @@ class ViewsCheckService:
 
         # 计算文件哈希值
         file_hash = hashlib.md5(file_content).hexdigest()
-        key = f"upload:file:{user_id}:{file_hash}"
-        value = f"upload:file:{file_hash}"
+        key = f"uploadfile:{user_id}:{file_hash}"
+        value = f"uploadfile:{file_hash}"
 
         # 检查 Redis 中是否存在该 key
         cached_result = await self.rd.get(key)
         if cached_result:
             print(f"文件已上传过，直接返回缓存结果: {cached_result.decode()}")
-            return ErrorResponse(msg=f"文件已上传过，请勿重复上传", code=500)
+            return ErrorResponse(msg=f"文件已上传过，请勿重复上传", code=409)
         else:
             # 如果 Redis 中不存在该 key，则将其存入 Redis 缓存
-            await self.rd.set(key, value, ex=60)
+            await self.rd.set(key, value, ex=600000)
             print(f"文件未上传过，存入 Redis 缓存: {value}")
 
         return SuccessResponse(data="上传成功", code=200)

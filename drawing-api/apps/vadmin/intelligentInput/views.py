@@ -51,23 +51,31 @@ async def upload_images(file: UploadFile, auth: Auth = Depends(FullAdminAuth()),
 
     # 幂等性校验
     check_idempotency_result = await service.check_idempotency(file_content,auth.user.id)
-    if hasattr(check_idempotency_result, 'code') and check_idempotency_result.code == 200:
+    if hasattr(check_idempotency_result, 'data') :
+        outer_data = check_result.data
+        if isinstance(outer_data, dict) and 'code' in outer_data:
+            if 200 == outer_data['code']:
+                # 重置文件指针以便后续使用
+                await file.seek(0)
 
-        # 重置文件指针以便后续使用
-        await file.seek(0)
+                # 上传图片到阿里云 OSS
+                filepath = ALIYUN_OSS_INTELIGENT_PATH
+                result = await AliyunOSS(BucketConf(**ALIYUN_OSS)).upload_image(filepath, file)
+                print(f"上传结果：{result}")
 
-        # 上传图片到阿里云 OSS
-        filepath = ALIYUN_OSS_INTELIGENT_PATH
-        result = await AliyunOSS(BucketConf(**ALIYUN_OSS)).upload_image(filepath, file)
-        print(f"上传结果：{result}")
+                data = schemas.DrawingImagesRecord(
+                    filename=file.filename,
+                    image_url=result,
+                    create_user_id=auth.user.id,
+                    file_size=100,
+                    image_type="jpg"
+                )
+            else:
+                print("返回结果的 data 属性下不包含 data 字段")
+        else:
+            print("返回结果的 data 属性下不包含 data 字段")
 
-        data = schemas.DrawingImagesRecord(
-            filename=file.filename,
-            image_url=result,
-            create_user_id=auth.user.id,
-            file_size=100,
-            image_type="jpg"
-    )
+
 
     # 调用deepseek接口查看图片内容
 
