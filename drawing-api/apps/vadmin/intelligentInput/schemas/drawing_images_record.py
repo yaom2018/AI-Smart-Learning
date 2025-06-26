@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 # @version        : 1.0
-# @Create Time    : 2025/06/22 16:52
+# @Create Time    : 2025/06/24 17:41
 # @File           : drawing_images_record.py
 # @IDE            : PyCharm
 # @desc           : pydantic 模型，用于数据库序列化操作

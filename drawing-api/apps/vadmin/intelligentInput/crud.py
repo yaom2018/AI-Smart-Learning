@@ -5,11 +5,20 @@
 # @File           : crud.py
 # @IDE            : PyCharm
 # @desc           : 数据访问层
-from sqlalchemy.ext.asyncio import AsyncSession
-from core.crud import DalBase
 from . import schemas, models
+from core.crud import DalBase
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
+
+
+class DrawingImagesRecordDal(DalBase):
+
+    def __init__(self, db: AsyncSession):
+        super(DrawingImagesRecordDal, self).__init__()
+        self.db = db
+        self.model = models.DrawingImagesRecord
+        self.schema = schemas.DrawingImagesRecordSimpleOut
 
 
 class DrawingImagesRecordDal(DalBase):
