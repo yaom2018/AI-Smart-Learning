@@ -1,0 +1,52 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/27.0.9 Chrome/134.0.6998.205 Electron/35.4.0 Safari/537.36" version="27.0.9">
+  <diagram name="第 1 页" id="5sXR2GqBduL43ie47MA_">
+    <mxGraphModel dx="1179" dy="595" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="Pu4IVxpy0yO_UZqCTSRl-1" value="图片大小，是否为空" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="220" y="270" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Pu4IVxpy0yO_UZqCTSRl-2" value="上传图片" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="280" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Pu4IVxpy0yO_UZqCTSRl-3" value="重复check" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="360" y="270" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Pu4IVxpy0yO_UZqCTSRl-4" value="调用大&lt;code style=&quot;box-sizing: border-box; vertical-align: middle; background-color: rgb(246, 247, 248); border: 0.1rem solid rgba(0, 0, 0, 0.1); border-radius: 6.4px; padding: 1.6px; margin: auto; color: rgb(28, 30, 33); text-align: left; max-width: 1000px !important; font-size: 14px;&quot;&gt;&lt;font face=&quot;PingFang SC&quot;&gt;模型接口&lt;/font&gt;&lt;/code&gt;" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="500" y="270" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Pu4IVxpy0yO_UZqCTSRl-5" value="&lt;span style=&quot;color: rgb(28, 30, 33); font-family: SFMono-Regular, Menlo, Monaco, Consolas, &amp;quot;Liberation Mono&amp;quot;, &amp;quot;Courier New&amp;quot;, monospace; font-size: 13.3px; text-align: left; background-color: rgb(246, 247, 248);&quot;&gt;internvl3-latest&lt;/span&gt;" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="440" y="80" width="200" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="Pu4IVxpy0yO_UZqCTSRl-6" value="调用大&lt;code style=&quot;box-sizing: border-box; vertical-align: middle; background-color: rgb(246, 247, 248); border: 0.1rem solid rgba(0, 0, 0, 0.1); border-radius: 6.4px; padding: 1.6px; margin: auto; color: rgb(28, 30, 33); text-align: left; max-width: 1000px !important; font-size: 14px;&quot;&gt;&lt;font face=&quot;PingFang SC&quot;&gt;模型接口&lt;/font&gt;&lt;/code&gt;" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="640" y="270" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Pu4IVxpy0yO_UZqCTSRl-7" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="Pu4IVxpy0yO_UZqCTSRl-2" target="Pu4IVxpy0yO_UZqCTSRl-1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="160" y="320" as="sourcePoint" />
+            <mxPoint x="210" y="270" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Pu4IVxpy0yO_UZqCTSRl-8" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="Pu4IVxpy0yO_UZqCTSRl-1" target="Pu4IVxpy0yO_UZqCTSRl-3">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="240" y="380" as="sourcePoint" />
+            <mxPoint x="310" y="380" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Pu4IVxpy0yO_UZqCTSRl-9" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="Pu4IVxpy0yO_UZqCTSRl-3" target="Pu4IVxpy0yO_UZqCTSRl-4">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="320" y="350" as="sourcePoint" />
+            <mxPoint x="380" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Pu4IVxpy0yO_UZqCTSRl-10" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="Pu4IVxpy0yO_UZqCTSRl-4" target="Pu4IVxpy0yO_UZqCTSRl-6">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="530" y="380" as="sourcePoint" />
+            <mxPoint x="590" y="380" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

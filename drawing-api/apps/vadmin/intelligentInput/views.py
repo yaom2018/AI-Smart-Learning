@@ -49,12 +49,12 @@ async def upload_images(file: UploadFile, auth: Auth = Depends(FullAdminAuth()),
     else:
         print("返回结果中不包含 data 属性")
 
+    # 重置文件指针以便后续使用
+    await file.seek(0)
+    # 调用 InternVL3-latest 接口查看图片内容
+    llm_result = await service.call_llm(file,auth.user.id)
     # 幂等性校验
     check_idempotency_result = await service.check_idempotency(file_content,auth.user.id)
-    # if hasattr(check_idempotency_result, 'data') :
-    #     outer_data = check_result.data
-    #     if isinstance(outer_data, dict) and 'code' in outer_data:
-    #         if 200 == outer_data['code']:
     if getattr(check_idempotency_result, 'data', None) and isinstance(check_result.data,dict) and check_result.data.get('code') == 200:
         # 重置文件指针以便后续使用
         await file.seek(0)
@@ -73,10 +73,6 @@ async def upload_images(file: UploadFile, auth: Auth = Depends(FullAdminAuth()),
         )
     else:
         print("返回结果的 data 属性下不包含 data 字段")
-
-    # 调用deepseek接口查看图片内容
-
-
 
     return SuccessResponse(await crud.DrawingImagesRecordDal(auth.db).create_data(data=data))
 
