@@ -37,16 +37,6 @@ class BaseModel(Base):
         :return:
         """
         mapper = inspect(cls)
-
-        # for attr_name, column_property in mapper.column_attrs.items():
-        #     # 假设它是单列属性
-        #     column = column_property.columns[0]
-        #     # 访问各种属性
-        #     print(f"属性: {attr_name}")
-        #     print(f"类型: {column.type}")
-        #     print(f"默认值: {column.default}")
-        #     print(f"服务器默认值: {column.server_default}")
-
         return mapper.column_attrs.keys()
 
     @classmethod

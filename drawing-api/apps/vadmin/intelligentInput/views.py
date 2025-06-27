@@ -49,10 +49,6 @@ async def upload_images(file: UploadFile, auth: Auth = Depends(FullAdminAuth()),
     else:
         print("返回结果中不包含 data 属性")
 
-    # 重置文件指针以便后续使用
-    await file.seek(0)
-    # 调用 InternVL3-latest 接口查看图片内容
-    llm_result = await service.call_llm(file,auth.user.id)
     # 幂等性校验
     check_idempotency_result = await service.check_idempotency(file_content,auth.user.id)
     if getattr(check_idempotency_result, 'data', None) and isinstance(check_result.data,dict) and check_result.data.get('code') == 200:
@@ -71,6 +67,10 @@ async def upload_images(file: UploadFile, auth: Auth = Depends(FullAdminAuth()),
             file_size=100,
             image_type="jpg"
         )
+
+        # 调用 InternVL3-latest 接口查看图片内容
+        llm_result = await service.call_llm(file, auth.user.id)
+
     else:
         print("返回结果的 data 属性下不包含 data 字段")
 

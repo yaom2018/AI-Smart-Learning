@@ -26,9 +26,9 @@ class ViewsCheckService:
         print(f"Redis client initialized: {self.rd}")
 
     # 调用多模态接口处理图片内容
-    async def call_llm(self, file_content: UploadFile, user_id: Integer) -> SuccessResponse:
+    async def call_llm(self, file: UploadFile, user_id: Integer) -> SuccessResponse:
 
-
+        await file.seek(0)
         client = OpenAI(
             api_key=INTERNLM3_API_KEY,  # 此处传token，不带Bearer
             base_url=INTERNLM3_BASE_URL,
@@ -36,8 +36,42 @@ class ViewsCheckService:
 
         # 创建 PicUtil 实例
         pic_util = PicUtil(rd=self.rd)
-        image_base64 = await pic_util.uploadFile_to_base64(file_content)
+        image_base64 = await pic_util.uploadFile_to_base64(file)
 
+        # Prompt 模板
+        prompt_template = """{
+          "task_description": "识别图片中的中小学考试题目，提取题目内容、问题类型和关键信息",
+          "input_requirements": "包含完整题目的清晰图片，支持数学、语文、英语、科学等学科",
+          "output_format": {
+            "question_content": "string",
+            "subject": "enum['数学', '语文', '英语', '科学', '物理', '化学', '生物', '历史', '地理', '政治']",
+            "question_type": "enum['选择题', '填空题', '解答题', '判断题', '应用题', '阅读理解', '作文题', ...]",
+            "difficulty": "enum['基础', '中等', '较难', '困难']",
+            "keywords": ["string"],
+            "answer_position": {
+              "exists": "boolean",
+              "coordinates": "array[left, top, right, bottom]（若存在）"
+            },
+            "solution_steps": "string（若图片中存在）",
+            "special_requirements": "string（如：保留两位小数、用中文作答等）"
+          },
+          "example": {
+            "question_content": "小明有5个苹果，小红比小明多3个，请问小红有几个苹果？",
+            "subject": "数学",
+            "question_type": "应用题",
+            "difficulty": "基础",
+            "keywords": ["苹果", "数量", "加法"],
+            "answer_position": {"exists": false},
+            "solution_steps": "",
+            "special_requirements": ""
+          },
+          "cautions": [
+            "忽略图片中的装饰元素和无关文字",
+            "对于选择题，需提取所有选项内容",
+            "识别公式和符号时，使用LaTeX格式表示（如：\\frac{1}{2} 表示二分之一）",
+            "若题目跨页，需分别标注每张图片的内容"
+          ]
+        }"""
         # 构建请求（图 + 文）
         response = client.chat.completions.create(
             model="internvl3-latest",  # 注意：模型名必须是服务支持的
@@ -46,7 +80,8 @@ class ViewsCheckService:
                     "role": "user",
                     "content": [
                         # 将提示词动态化，配置在字典表中
-                        {"type": "text", "text": "请分析这张图片"},
+                        # {"type": "text", "text": "请分析这张图片"},
+                        {"type": "text", "text": prompt_template},
                         {"type": "image_url", "image_url": {
                             "url": f"data:image/jpeg;base64,{image_base64}"
                         }}
@@ -58,44 +93,11 @@ class ViewsCheckService:
         )
 
         print(response.choices[0].message.content)
+        # 写入数据表
+
         return SuccessResponse(data=response.choices[0].message.content)
 
 
-        # try:
-        #     # 上传图片
-        #     upload_response = client.files.create(
-        #         file=(file_content.filename, file_content.file),
-        #         purpose="assistants"
-        #     )
-        #
-        #     # 获取上传后的文件ID
-        #     file_id = upload_response.id
-        #
-        #     # 发送聊天请求
-        #     chat_rsp = client.chat.completions.create(
-        #         model="internvl3-latest",
-        #         messages=[
-        #             {
-        #                 "role": "user",
-        #                 "content": [
-        #                     {"type": "text", "text": "请返回这张图片的内容"},
-        #                     {"type": "image", "image": {"file_id": file_id}}
-        #                 ]
-        #             }
-        #         ]
-        #     )
-        #
-        #     # 处理返回的响应
-        #     if chat_rsp.choices and len(chat_rsp.choices) > 0:
-        #         response_message = chat_rsp.choices[0].message
-        #         if response_message.content:
-        #             return {"response": response_message.content}
-        #         else:
-        #             return {"error": "助手没有回复内容。"}
-        #     else:
-        #         return {"error": "未收到任何回复。"}
-        # except Exception as e:
-        #     return {"error": f"处理图片时发生错误: {str(e)}"}
 
 
     async def check_image_validity(self, file: UploadFile) -> SuccessResponse:
