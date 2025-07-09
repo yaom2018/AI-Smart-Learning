@@ -194,7 +194,7 @@ if __name__ == '__main__':
 
     from apps.vadmin.intelligentInput.models import DrawingImagesRecord
 
-    crud = CrudGenerate(DrawingImagesRecord, "AI智慧上传图片", "drawing_images_record")
+    crud = CrudGenerate(DrawingImagesRecord, "多模态分析结果表", "drawing_multimodal_analysis")
     # 只打印代码，不执行创建写入
     crud.generate_codes()
     # 创建并写入代码

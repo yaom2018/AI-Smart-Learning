@@ -42,28 +42,47 @@ class ViewsCheckService:
         prompt_template = """{
           "task_description": "识别图片中的中小学考试题目，提取题目内容、问题类型和关键信息",
           "input_requirements": "包含完整题目的清晰图片，支持数学、语文、英语、科学等学科",
-          "output_format": {
-            "question_content": "string",
-            "subject": "enum['数学', '语文', '英语', '科学', '物理', '化学', '生物', '历史', '地理', '政治']",
-            "question_type": "enum['选择题', '填空题', '解答题', '判断题', '应用题', '阅读理解', '作文题', ...]",
-            "difficulty": "enum['基础', '中等', '较难', '困难']",
-            "keywords": ["string"],
-            "answer_position": {
-              "exists": "boolean",
-              "coordinates": "array[left, top, right, bottom]（若存在）"
-            },
-            "solution_steps": "string（若图片中存在）",
-            "special_requirements": "string（如：保留两位小数、用中文作答等）"
+          "response_format": {
+            "code": "enum[200, 300, 400, 500]",
+            "message": "string",            
+            "data": {
+              "question_content": "string",
+              "subject": "enum['数学', '语文', '英语', '科学', '物理', '化学', '生物', '历史', '地理', '政治']",
+              "question_type": "enum['选择题', '填空题', '解答题', '判断题', '应用题', '阅读理解', '作文题']",
+              "difficulty": "enum['基础', '中等', '较难', '困难']",
+              "keywords": ["string"],
+              "answer_position": {
+                "exists": "boolean",
+                "coordinates": "array[left, top, right, bottom]（若存在）"
+              },
+              "solution_steps": "string（若图片中存在）",
+              "special_requirements": "string（如：保留两位小数、用中文作答等）"
+            }
           },
-          "example": {
-            "question_content": "小明有5个苹果，小红比小明多3个，请问小红有几个苹果？",
-            "subject": "数学",
-            "question_type": "应用题",
-            "difficulty": "基础",
-            "keywords": ["苹果", "数量", "加法"],
-            "answer_position": {"exists": false},
-            "solution_steps": "",
-            "special_requirements": ""
+          "status_codes": {
+            "200": "成功识别中小学考试题目",
+            "300": "识别成功，但内容非中小学考试题目",
+            "400": "输入不符合要求（如图片模糊、不完整等）",
+            "500": "系统处理错误"
+          },
+          "example_success": {
+            "code": 200, 
+            "message": "识别成功",
+            "data": {
+              "question_content": "小明有5个苹果，小红比小明多3个，请问小红有几个苹果？",
+              "subject": "数学",
+              "question_type": "应用题",
+              "difficulty": "基础",
+              "keywords": ["苹果", "数量", "加法"],
+              "answer_position": {"exists": false},
+              "solution_steps": "",
+              "special_requirements": ""
+            }
+          },
+          "example_error": {
+            "code": 300, 
+            "message": "识别内容非中小学考试题目",
+            "data": null
           },
           "cautions": [
             "忽略图片中的装饰元素和无关文字",

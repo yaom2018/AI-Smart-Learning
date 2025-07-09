@@ -5,18 +5,18 @@
 # @File           : views.py
 # @IDE            : PyCharm
 # @desc           : 路由，视图文件
-from core.database import db_getter,redis_getter
-from fastapi import APIRouter, UploadFile, Depends
+from fastapi import UploadFile, Depends, APIRouter
+from application.settings import ALIYUN_OSS, ALIYUN_OSS_INTELIGENT_PATH
+from sqlalchemy.ext.asyncio import AsyncSession
 from redis.asyncio import Redis
+from core.database import db_getter, redis_getter
+from apps.vadmin.intelligentInput.service.viewsCheckService import ViewsCheckService
+from apps.vadmin.auth.utils.current import FullAdminAuth, AllUserAuth
+from core.dependencies import IdList
+from . import schemas, models, params, crud
 from utils.response import SuccessResponse
 from apps.vadmin.auth.utils.validation.auth import Auth
-from sqlalchemy.ext.asyncio import AsyncSession
-from . import crud, schemas, params
 from utils.file.aliyun_oss import AliyunOSS, BucketConf
-from apps.vadmin.intelligentInput.service.viewsCheckService import ViewsCheckService
-from application.settings import ALIYUN_OSS, ALIYUN_OSS_INTELIGENT_PATH
-from core.dependencies import IdList
-from apps.vadmin.auth.utils.current import AllUserAuth, FullAdminAuth
 
 
 app = APIRouter()
@@ -25,7 +25,7 @@ app = APIRouter()
 ###########################################################
 #    AI智慧上传图片
 ###########################################################
-@app.post("/drawing/images/uploadImg", summary="上传图片", tags=["AI智慧上传图片"])
+@app.post("/drawing/images/uploadImg", summary="上传图片", tags=["AI智慧上传图片调试中"])
 async def upload_images(file: UploadFile, auth: Auth = Depends(FullAdminAuth()), rd: Redis = Depends(redis_getter)):
     # 图片校验
     # 根据实际情况初始化 Redis 客户端

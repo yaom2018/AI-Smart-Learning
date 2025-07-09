@@ -65,56 +65,62 @@ def register_operation_record_middleware(app: FastAPI):
         response = await call_next(request)
         if not MONGO_DB_ENABLE:
             return response
-        telephone = request.scope.get('telephone', None)
-        user_id = request.scope.get('user_id', None)
-        user_name = request.scope.get('user_name', None)
-        route = request.scope.get('route')
-        if not telephone:
-            return response
-        elif request.method not in OPERATION_RECORD_METHOD:
-            return response
-        elif route.name in IGNORE_OPERATION_FUNCTION:
-            return response
-        process_time = time.time() - start_time
-        user_agent = parse(request.headers.get("user-agent"))
-        system = f"{user_agent.os.family} {user_agent.os.version_string}"
-        browser = f"{user_agent.browser.family} {user_agent.browser.version_string}"
-        query_params = dict(request.query_params.multi_items())
-        path_params = request.path_params
-        if isinstance(request.scope.get('body'), str):
-            body = request.scope.get('body')
-        else:
-            body = request.scope.get('body').decode()
-            if body:
-                body = json.loads(body)
-        params = {
-            "body": body,
-            "query_params": query_params if query_params else None,
-            "path_params": path_params if path_params else None,
-        }
-        content_length = response.raw_headers[0][1]
-        assert isinstance(route, APIRoute)
-        document = {
-            "process_time": process_time,
-            "telephone": telephone,
-            "user_id": user_id,
-            "user_name": user_name,
-            "request_api": request.url.__str__(),
-            "client_ip": request.client.host,
-            "system": system,
-            "browser": browser,
-            "request_method": request.method,
-            "api_path": route.path,
-            "summary": route.summary,
-            "description": route.description,
-            "tags": route.tags,
-            "route_name": route.name,
-            "status_code": response.status_code,
-            "content_length": content_length,
-            "create_datetime": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "params": json.dumps(params)
-        }
-        await OperationRecordDal(mongo_getter(request)).create_data(document)
+        try:
+            telephone = request.scope.get('telephone', None)
+            user_id = request.scope.get('user_id', None)
+            user_name = request.scope.get('user_name', None)
+            route = request.scope.get('route')
+            if not telephone:
+                return response
+            elif request.method not in OPERATION_RECORD_METHOD:
+                return response
+            elif route.name in IGNORE_OPERATION_FUNCTION:
+                return response
+            process_time = time.time() - start_time
+            user_agent = parse(request.headers.get("user-agent"))
+            system = f"{user_agent.os.family} {user_agent.os.version_string}"
+            browser = f"{user_agent.browser.family} {user_agent.browser.version_string}"
+            query_params = dict(request.query_params.multi_items())
+            path_params = request.path_params
+            if isinstance(request.scope.get('body'), str):
+                body = request.scope.get('body')
+            else:
+                body = request.scope.get('body').decode()
+                if body:
+                    body = json.loads(body)
+            params = {
+                "body": body,
+                "query_params": query_params if query_params else None,
+                "path_params": path_params if path_params else None,
+            }
+            content_length = response.raw_headers[0][1]
+            assert isinstance(route, APIRoute)
+            document = {
+                "process_time": process_time,
+                "telephone": telephone,
+                "user_id": user_id,
+                "user_name": user_name,
+                "request_api": request.url.__str__(),
+                "client_ip": request.client.host,
+                "system": system,
+                "browser": browser,
+                "request_method": request.method,
+                "api_path": route.path,
+                "summary": route.summary,
+                "description": route.description,
+                "tags": route.tags,
+                "route_name": route.name,
+                "status_code": response.status_code,
+                "content_length": content_length,
+                "create_datetime": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "params": json.dumps(params)
+            }
+            await OperationRecordDal(mongo_getter(request)).create_data(document)
+        except Exception as e:
+            # 记录异常信息
+            print(f"Error occurred while processing the request: {e}")
+            # 可以在这里添加更多的日志记录或错误处理逻辑
+
         return response
 
 
