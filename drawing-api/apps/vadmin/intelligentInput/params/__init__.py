@@ -1,1 +1,2 @@
 from .drawing_images_record import DrawingImagesRecordParams
+from .drawing_multimodal_analysis import DrawingMultimodalAnalysisParams

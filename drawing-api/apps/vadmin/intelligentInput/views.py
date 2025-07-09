@@ -5,18 +5,18 @@
 # @File           : views.py
 # @IDE            : PyCharm
 # @desc           : 路由，视图文件
-from fastapi import UploadFile, Depends, APIRouter
-from application.settings import ALIYUN_OSS, ALIYUN_OSS_INTELIGENT_PATH
-from sqlalchemy.ext.asyncio import AsyncSession
-from redis.asyncio import Redis
-from core.database import db_getter, redis_getter
-from apps.vadmin.intelligentInput.service.viewsCheckService import ViewsCheckService
-from apps.vadmin.auth.utils.current import FullAdminAuth, AllUserAuth
-from core.dependencies import IdList
-from . import schemas, models, params, crud
-from utils.response import SuccessResponse
+from fastapi import Depends, UploadFile, APIRouter
+from . import params, models, schemas, crud
+from application.settings import ALIYUN_OSS_INTELIGENT_PATH, ALIYUN_OSS
 from apps.vadmin.auth.utils.validation.auth import Auth
-from utils.file.aliyun_oss import AliyunOSS, BucketConf
+from core.dependencies import IdList
+from utils.response import SuccessResponse
+from apps.vadmin.intelligentInput.service.viewsCheckService import ViewsCheckService
+from sqlalchemy.ext.asyncio import AsyncSession
+from utils.file.aliyun_oss import BucketConf, AliyunOSS
+from redis.asyncio import Redis
+from apps.vadmin.auth.utils.current import FullAdminAuth, AllUserAuth
+from core.database import db_getter, redis_getter
 
 
 app = APIRouter()
@@ -136,4 +136,37 @@ async def put_drawing_images_record(data_id: int, data: schemas.DrawingImagesRec
 async def get_drawing_images_record(data_id: int, db: AsyncSession = Depends(db_getter)):
     schema = schemas.DrawingImagesRecordSimpleOut
     return SuccessResponse(await crud.DrawingImagesRecordDal(db).get_data(data_id, v_schema=schema))
+
+
+
+
+###########################################################
+#    多模态分析结果表
+###########################################################
+@app.get("/drawing/multimodal/analysis", summary="获取多模态分析结果表列表", tags=["多模态分析结果表"])
+async def get_drawing_multimodal_analysis_list(p: params.DrawingMultimodalAnalysisParams = Depends(), auth: Auth = Depends(AllUserAuth())):
+    datas, count = await crud.DrawingMultimodalAnalysisDal(auth.db).get_datas(**p.dict(), v_return_count=True)
+    return SuccessResponse(datas, count=count)
+
+
+@app.post("/drawing/multimodal/analysis", summary="创建多模态分析结果表", tags=["多模态分析结果表"])
+async def create_drawing_multimodal_analysis(data: schemas.DrawingMultimodalAnalysis, auth: Auth = Depends(AllUserAuth())):
+    return SuccessResponse(await crud.DrawingMultimodalAnalysisDal(auth.db).create_data(data=data))
+
+
+@app.delete("/drawing/multimodal/analysis", summary="删除多模态分析结果表", description="硬删除", tags=["多模态分析结果表"])
+async def delete_drawing_multimodal_analysis_list(ids: IdList = Depends(), auth: Auth = Depends(AllUserAuth())):
+    await crud.DrawingMultimodalAnalysisDal(auth.db).delete_datas(ids=ids.ids, v_soft=False)
+    return SuccessResponse("删除成功")
+
+
+@app.put("/drawing/multimodal/analysis/{data_id}", summary="更新多模态分析结果表", tags=["多模态分析结果表"])
+async def put_drawing_multimodal_analysis(data_id: int, data: schemas.DrawingMultimodalAnalysis, auth: Auth = Depends(AllUserAuth())):
+    return SuccessResponse(await crud.DrawingMultimodalAnalysisDal(auth.db).put_data(data_id, data))
+
+
+@app.get("/drawing/multimodal/analysis/{data_id}", summary="获取多模态分析结果表信息", tags=["多模态分析结果表"])
+async def get_drawing_multimodal_analysis(data_id: int, db: AsyncSession = Depends(db_getter)):
+    schema = schemas.DrawingMultimodalAnalysisSimpleOut
+    return SuccessResponse(await crud.DrawingMultimodalAnalysisDal(db).get_data(data_id, v_schema=schema))
 

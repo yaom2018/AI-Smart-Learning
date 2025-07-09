@@ -1,1 +1,2 @@
 from .drawing_images_record import DrawingImagesRecord, DrawingImagesRecordSimpleOut
+from .drawing_multimodal_analysis import DrawingMultimodalAnalysis, DrawingMultimodalAnalysisSimpleOut

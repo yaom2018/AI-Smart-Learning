@@ -192,9 +192,9 @@ if __name__ == '__main__':
         print("导入失败:", e)
 
 
-    from apps.vadmin.intelligentInput.models import DrawingImagesRecord
+    from apps.vadmin.intelligentInput.models import DrawingMultimodalAnalysis
 
-    crud = CrudGenerate(DrawingImagesRecord, "多模态分析结果表", "drawing_multimodal_analysis")
+    crud = CrudGenerate(DrawingMultimodalAnalysis, "多模态分析结果表", "drawing_multimodal_analysis")
     # 只打印代码，不执行创建写入
     crud.generate_codes()
     # 创建并写入代码
